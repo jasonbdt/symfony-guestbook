@@ -1,5 +1,22 @@
 # Development environment override
 services:
+
+  ###> doctrine/doctrine-bundle ###
+  database:
+    ports:
+      - "5432"
+  ###< doctrine/doctrine-bundle ###
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 5050:80
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ja.bladt@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: geheim
+
   php:
     build:
       context: .
@@ -24,3 +41,6 @@ services:
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+volumes:
+  pgadmindata:
