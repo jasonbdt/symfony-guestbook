@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Conference;
+use App\Entity\Comment;
+use App\Form\CommentType;
+
 use App\Repository\ConferenceRepository;
 use App\Repository\CommentRepository;
 
@@ -27,7 +30,9 @@ final class ConferenceController extends AbstractController
         Conference $conference,
         CommentRepository $commentRepository
     ): Response {
-        dump($conference);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+
         $offset = max(0, $request->query->getInt('offset', 0));
         $paginator = $commentRepository->getCommentPaginator($conference, $offset);
 
@@ -35,7 +40,8 @@ final class ConferenceController extends AbstractController
             'conference' => $conference,
             'comments' => $paginator,
             'previous' => $offset - CommentRepository::COMMENTS_PER_PAGE,
-            'next' => min(count($paginator), $offset + CommentRepository::COMMENTS_PER_PAGE)
+            'next' => min(count($paginator), $offset + CommentRepository::COMMENTS_PER_PAGE),
+            'comment_form' => $form
         ]);
     }
 }
