@@ -34,13 +34,20 @@ services:
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
       APP_ENV: "${APP_ENV:-dev}"
+      AKISMET_KEY: /run/secrets/akismet_key
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+    secrets:
+      - akismet_key
 
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+secrets:
+  akismet_key:
+    file: ./akismet_key.txt
 
 volumes:
   pgadmindata:
