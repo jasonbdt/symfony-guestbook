@@ -8,6 +8,7 @@ use App\Form\CommentType;
 
 use App\Repository\ConferenceRepository;
 use App\Repository\CommentRepository;
+use App\SpamChecker;
 
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -36,6 +37,7 @@ final class ConferenceController extends AbstractController
         Request $request,
         Conference $conference,
         CommentRepository $commentRepository,
+        SpamChecker $spamChecker,
         #[AutoWire('%photo_dir%')] string $photoDir
     ): Response {
         $comment = new Comment();
@@ -52,6 +54,18 @@ final class ConferenceController extends AbstractController
             }
 
             $this->entityManager->persist($comment);
+
+            $context = [
+                'user_ip' => $request->getClientIp(),
+                'user_agent' => $request->headers->get('user-agent'),
+                'referrer' => $request->headers->get('referer'),
+                'permalink' => $request->getUri()
+            ];
+
+            if (2 === $spamChecker->getSpamScore($comment, $context)) {
+                throw new \RuntimeException('Blatant spam, go away!');
+            }
+
             $this->entityManager->flush();
 
             return $this->redirectToRoute('conference', [
