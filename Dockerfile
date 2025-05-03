@@ -30,7 +30,7 @@ RUN set -eux; \
 		apcu \
 		intl \
 		opcache \
-        pdo_pgsql \
+		pdo_pgsql \
 		zip \
 	;
 
@@ -62,10 +62,6 @@ ENV XDEBUG_MODE=off
 ENV FRANKENPHP_WORKER_CONFIG=watch
 
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-
-RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
-RUN apt-get update && apt-get install -y --no-install-recommends symfony-cli \
-    && rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \
 	install-php-extensions \
