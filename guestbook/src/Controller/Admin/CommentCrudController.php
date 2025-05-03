@@ -55,7 +55,7 @@ class CommentCrudController extends AbstractCrudController
         ]);
 
         if (Crud::PAGE_EDIT === $pageName) {
-            yield $createdAt->setFormTypeOptions('disabled', true);
+            yield $createdAt->setFormTypeOptions(['disabled' => true]);
         }
     }
 }
