@@ -6,13 +6,20 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ConferenceControllerTest extends WebTestCase
 {
-    public function testSomething(): void
+    public function testCommentSubmission()
     {
         $client = static::createClient();
-        $client->request('GET', '/');
+        $client->request('GET', '/conference/amsterdam-2019');
+        $client->submitForm('Submit', [
+            'comment[author]' => 'John Doe',
+            'comment[text]' => 'Lorem Ipsum Dolor Sit Amet',
+            'comment[email]' => 'john.doe@example.com',
+            'comment[photo]' => dirname(__DIR__, 2) .'/public/images/under-construction.gif'
+        ]);
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h2', 'Give your feedback');
+        $this->assertResponseRedirects();
+        $client->followRedirect();
+        $this->assertSelectorExists('div:contains("There are 2 comments")');
     }
 
     public function testConferencePage(): void
@@ -30,19 +37,12 @@ class ConferenceControllerTest extends WebTestCase
         $this->assertSelectorExists('div:contains("There are 1 comments")');
     }
 
-    public function testCommentSubmission()
+    public function testSomething(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/conference/amsterdam-2019');
-        $client->submitForm('Submit', [
-            'comment[author]' => 'John Doe',
-            'comment[text]' => 'Lorem Ipsum Dolor Sit Amet',
-            'comment[email]' => 'john.doe@example.com',
-            'comment[photo]' => dirname(__DIR__, 2) .'/public/images/under-construction.gif'
-        ]);
+        $client->request('GET', '/');
 
-        $this->assertResponseRedirects();
-        $client->followRedirect();
-        $this->assertSelectorExists('div:contains("There are 2 comments")');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h2', 'Give your feedback');
     }
 }
