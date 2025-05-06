@@ -2,13 +2,16 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Panther\PantherTestCase;
 
-class ConferenceControllerTest extends WebTestCase
+class ConferenceControllerTest extends PantherTestCase
 {
     public function testCommentSubmission()
     {
-        $client = static::createClient();
+        $client = static::createPantherClient([
+            'external_base_uri' => rtrim($_SERVER['SYMFONY_PROJECT_DEFAULT_ROUTE_URL'], '/')
+        ]);
+
         $client->request('GET', '/conference/amsterdam-2019');
         $client->submitForm('Submit', [
             'comment[author]' => 'John Doe',
