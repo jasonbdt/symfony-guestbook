@@ -17,6 +17,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 
 final class ConferenceController extends AbstractController
 {
@@ -35,7 +36,7 @@ final class ConferenceController extends AbstractController
     #[Route('/conference/{slug}', name: 'conference')]
     public function show(
         Request $request,
-        Conference $conference,
+        #[MapEntity(mapping: ['slug' => 'slug'])] Conference $conference,
         CommentRepository $commentRepository,
         SpamChecker $spamChecker,
         #[AutoWire('%photo_dir%')] string $photoDir
